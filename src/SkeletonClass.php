@@ -1,7 +1,7 @@
 <?php
 
-namespace VendorName\Skeleton;
+namespace RyanChandler\Using;
 
-class SkeletonClass
+class UsingClass
 {
 }
