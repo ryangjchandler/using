@@ -50,6 +50,14 @@ using($file, function (TextFile $file) {
 var_dump($file->resource);
 ```
 
+### Handling Exceptions
+
+The `using()` function will wrap the invokation of your callback in a `try..finally` statement.
+
+This ensures that your object is disposed of regardless of any exceptions.
+
+Any exceptions thrown inside of your callback will still propagate up to the top-level.
+
 ## Testing
 
 ```bash
