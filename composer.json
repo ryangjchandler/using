@@ -26,7 +26,10 @@
     "autoload": {
         "psr-4": {
             "RyanChandler\\Using\\": "src"
-        }
+        },
+        "files": [
+            "src/functions.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {
