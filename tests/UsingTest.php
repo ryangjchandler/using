@@ -34,5 +34,5 @@ it('throws an exception when non-disposable objects are passed', function () {
         expect($file->read())->toEqual("Hello, world!\n");
     });
 
-    expect($file->resource)->toBeResource();
+    expect($file->resource)->not->toBeResource()->toBeNull();
 });
