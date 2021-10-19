@@ -5,24 +5,7 @@
 [![GitHub Code Style Action Status](https://img.shields.io/github/workflow/status/ryangjchandler/using/Check%20&%20fix%20styling?label=code%20style)](https://github.com/ryangjchandler/using/actions?query=workflow%3A"Check+%26+fix+styling"+branch%3Amaster)
 [![Total Downloads](https://img.shields.io/packagist/dt/ryangjchandler/using.svg?style=flat-square)](https://packagist.org/packages/ryangjchandler/using)
 
----
-This package can be used as to scaffold a framework agnostic package. Follow these steps to get started:
-
-1. Press the "Use template" button at the top of this repo to create a new repo with the contents of this skeleton
-2. Run "php ./configure.php" to run a script that will replace all placeholders throughout all the files
-3. Have fun creating your package.
-4. If you need help creating a package, consider picking up our <a href="https://laravelpackage.training">Laravel Package Training</a> video course.
----
-
-This is where your description should go. Try and limit it to a paragraph or two. Consider adding a small example.
-
-## Support us
-
-[<img src="https://github-ads.s3.eu-central-1.amazonaws.com/using.jpg?t=1" width="419px" />](https://spatie.be/github-ad-click/using)
-
-We invest a lot of resources into creating [best in class open source packages](https://spatie.be/open-source). You can support us by [buying one of our paid products](https://spatie.be/open-source/support-us).
-
-We highly appreciate you sending us a postcard from your hometown, mentioning which of our package(s) you are using. You'll find our address on [our contact page](https://spatie.be/about-us). We publish all received postcards on [our virtual postcard wall](https://spatie.be/open-source/postcards).
+This package provides a `Disposable` interface and `using()` global function that can be used to enforce the disposal of objects.
 
 ## Installation
 
@@ -34,9 +17,37 @@ composer require ryangjchandler/using
 
 ## Usage
 
+You should first implement the `RyanChandler\Using\Disposable` interface on your class. This contract requires an implementation of a `public function dispose(): void` method.
+
 ```php
-$skeleton = new RyanChandler\Using();
-echo $skeleton->echoPhrase('Hello, RyanChandler!');
+class TextFile implements Disposable
+{
+    private $resource;
+
+    public function dispose(): void
+    {
+        $this->resource = fclose($this->resource);
+    }
+}
+```
+
+You can then use the `using()` helper function with your `Disposable` object to enforce disposal.
+
+```php
+// This code might create a file pointer and store it on the class.
+$file = new TextFile('hello.txt');
+
+// We can then "use" the `$file` object inside of this callback. After the callback has been
+// invoked, the `TextFile::dispose()` method will be called.
+using($file, function (TextFile $file) {
+    DB::create('messages', [
+        'message' => $file->contents(),
+    ]);
+});
+
+// The `$resource` property is no-longer a valid stream, since we closed
+// the handle in the `dispose` method.
+var_dump($file->resource);
 ```
 
 ## Testing
