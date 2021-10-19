@@ -31,7 +31,7 @@ it('throws an exception when non-disposable objects are passed', function () {
     $file = new TextFile(__DIR__ . '/fixtures/test.txt', 'r');
 
     using($file, function (TextFile $file) {
-        expect($file->read())->toEqual("Hello, world!\n");
+        expect($file->read())->toEqual('Hello, world!' . PHP_EOL);
     });
 
     expect($file->resource)->not->toBeResource()->toBeNull();
