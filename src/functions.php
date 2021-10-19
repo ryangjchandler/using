@@ -6,14 +6,17 @@ if (! function_exists('using')) {
     /**
      * Enforce the disposal of the `Disposable` object.
      *
-     * @param  \RyanChandler\Using\Disposable  $disposable
-     * @param  \Closure  $callback
+     * @template T of \RyanChandler\Using\Disposable
+     * @param  T  $disposable
+     * @param  callable(T): void  $callback
      * @return void
      */
-    function using(Disposable $disposable, Closure $callback): void
+    function using(Disposable $disposable, callable $callback): void
     {
-        $callback($disposable);
-
-        $disposable->dispose();
+        try {
+            $callback($disposable);
+        } finally {
+            $disposable->dispose();
+        }
     }
 }
